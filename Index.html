@@ -1,0 +1,125 @@
+
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>नेपाली पात्रो 2082</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css">
+  <style>
+    .calendar th, .calendar td {
+      height: 80px;
+      vertical-align: middle;
+      font-size: 20px;
+    }
+    td.empty {
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container text-center mt-5">
+    <h1>नेपाली पात्रो 2082</h1>
+    <div class="d-flex justify-content-between align-items-center my-4">
+      <button class="btn btn-outline-primary" onclick="prevMonth()">अघिल्लो महिना</button>
+      <h3 id="monthYear" class="mb-0"></h3>
+      <button class="btn btn-outline-primary" onclick="nextMonth()">अर्को महिना</button>
+    </div>
+    <table class="table table-bordered calendar">
+      <thead>
+        <tr>
+          <th>आइत</th><th>सोम</th><th>मंगल</th><th>बुध</th><th>बिही</th><th>शुक्र</th><th>शनि</th>
+        </tr>
+      </thead>
+      <tbody id="calendarBody">
+        <!-- Calendar will be injected here -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const months = [
+      { name: "बैशाख", days: 31 },
+      { name: "जेठ", days: 31 },
+      { name: "असार", days: 32 },
+      { name: "साउन", days: 31 },
+      { name: "भदौ", days: 31 },
+      { name: "आश्विन", days: 31 },
+      { name: "कार्तिक", days: 30 },
+      { name: "मंसिर", days: 29 },
+      { name: "पुष", days: 30 },
+      { name: "माघ", days: 29 },
+      { name: "फागुन", days: 30 },
+      { name: "चैत", days: 30 }
+    ];
+
+    let startDays = [];
+    let currentMonth = 0;
+
+    function calculateStartDays() {
+      startDays = [];
+      let day = 1; // Baishakh 1 starts on Monday (1)
+      for (let i = 0; i < months.length; i++) {
+        startDays.push(day);
+        day = (day + months[i].days) % 7;
+      }
+    }
+
+    function renderCalendar(monthIndex) {
+      const month = months[monthIndex];
+      const daysInMonth = month.days;
+      const startDay = startDays[monthIndex];
+
+      document.getElementById("monthYear").innerText = `${month.name} 2082`;
+
+      const tbody = document.getElementById("calendarBody");
+      tbody.innerHTML = "";
+
+      let date = 1;
+      for (let i = 0; i < 6; i++) {
+        let row = document.createElement("tr");
+
+        for (let j = 0; j < 7; j++) {
+          let cell = document.createElement("td");
+
+          if (i === 0 && j < startDay) {
+            cell.classList.add("empty");
+          } else if (date <= daysInMonth) {
+            cell.innerText = convertToNepaliNumber(date);
+            date++;
+          } else {
+            cell.classList.add("empty");
+          }
+
+          row.appendChild(cell);
+        }
+
+        tbody.appendChild(row);
+        if (date > daysInMonth) break;
+      }
+    }
+
+    function prevMonth() {
+      if (currentMonth > 0) {
+        currentMonth--;
+        renderCalendar(currentMonth);
+      }
+    }
+
+    function nextMonth() {
+      if (currentMonth < 11) {
+        currentMonth++;
+        renderCalendar(currentMonth);
+      }
+    }
+
+    function convertToNepaliNumber(num) {
+      const nepaliNums = ['०','१','२','३','४','५','६','७','८','९'];
+      return String(num).split('').map(d => nepaliNums[d]).join('');
+    }
+
+    calculateStartDays();
+    renderCalendar(currentMonth);
+  </script>
+</body>
+</html>
